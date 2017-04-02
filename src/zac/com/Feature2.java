@@ -4,44 +4,54 @@ import java.io.*;
 import java.util.*;
 
 /**
- * Created by zac on 4/1/17.
+ * Created by zac on 3/31/17.
+ *
+ * This class perform Feature 1 to print out top 10 most active Host/IP in descending order.
  */
 public class Feature2 {
-    /** A map contains Host/IP name as key and its frequency as value. */
-    Map<String, Integer> countHostOrIPFrequencyMap;
+//    /** A map contains Host/IP name as key and its frequency as value. */
+//    Map<String, Integer> countHostOrIPFrequencyMap;
+    Map<String, Integer> resourceUsedFrequency;
 
-    /**
-     * Constructor
-     */
-    Feature2() {
-        countHostOrIPFrequencyMap = new HashMap<>();
-        /** Run execution, throw exception if file not found. */
-        try { executeFeature1(); }
+    Feature2(Map<String, Integer> map) throws FileNotFoundException {
 
-        catch (FileNotFoundException e) {
-            System.out.println("File Not Found, please check your input \"log.txt\"");
-        }
+        resourceUsedFrequency = map;
+
+        execute();
+
     }
+
+
+
+
+
+
 
     /**
      * Helper method of constructor, read the file and find out top 10 most active Host/IP
      *
      * @throws FileNotFoundException if log.txt not found
      */
-    private void executeFeature1() throws FileNotFoundException {
-        readFile();
-        Deque<Map.Entry<String, Integer>> theTop10MostAcitveDescending = findTheTop10MostAcitveDescending();
+    void execute() throws FileNotFoundException {
+
+        PriorityQueue<Map.Entry<String, Integer>> pq
+                = findTheTop10MostAcitveDescending(resourceUsedFrequency);
+
+        Deque<Map.Entry<String, Integer>> deque = new ArrayDeque<>();
+
+        while (!pq.isEmpty()) deque.push(pq.poll());
+
 
         /** Print out the result. */
         Writer writer = null;
 
         /** Write to hosts.txt and catch the exceptions. */
         try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("hosts.txt"), "utf-8"));
-
-            while (!theTop10MostAcitveDescending.isEmpty()) {
-                Map.Entry<String, Integer> entry = theTop10MostAcitveDescending.pop();
-                writer.write(entry.getKey() + ", " + entry.getValue() + "\n");
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("resource.txt"), "utf-8"));
+            /** Pop up all entries and write to output file. */
+            while (!deque.isEmpty()) {
+                Map.Entry<String, Integer> entry = deque.pop();
+                writer.write(entry.getKey() + "\n");
             }
         }
         catch (IOException ex) { System.out.println("IO exception: " + ex); }
@@ -49,40 +59,7 @@ public class Feature2 {
         finally { try { writer.close(); } catch (Exception ex) { System.out.println("Output file can't be closed: " + ex); } }
     }
 
-    /**
-     * Read the file, and count each Host/IP's frequency then put it into the countHostOrIPFrequencyMap
-     * For the countHostOrIPFrequencyMap, key is Host/IP's name and the frequency is its value.
-     *
-     * Run time: O(mn)
-     * m is the line quantity of input file, and n is the average length of lines.
-     *
-     * @throws FileNotFoundException if log.txt not found.
-     */
-    private void readFile() throws FileNotFoundException {
-        /** Try to read the input file, and catch the file not found exception. */
-        try {
-            File file = new File("../log.txt");
-            /** BufferReader has bigger buffer and more efficient when reading huge file. */
-            BufferedReader br = new BufferedReader(new FileReader(file));
-            /** A variable to contain each line. */
-            String line;
 
-            /** Read each line from BufferReader. */
-            while((line = br.readLine()) != null) {
-                /** Split the line with " ". */
-                String[] strs = line.split(" ");
-                String key = strs[0];
-
-                /** If the key is not in the map, put the key and 1 as value. */
-                if (!countHostOrIPFrequencyMap.containsKey(key))
-                    countHostOrIPFrequencyMap.put(key, 1);
-                /** Else add 1 to its frequency. */
-                else
-                    countHostOrIPFrequencyMap.put(key, countHostOrIPFrequencyMap.get(key) + 1);
-            }
-        }
-        catch (IOException e) { System.out.println("File is not found."); }
-    }
 
     /**
      * Find out top 10 most active entries from countHostOrIPFrequencyMap
@@ -93,29 +70,26 @@ public class Feature2 {
      *
      * @return An Deque of Map.Entry<String, Integer> with top 10 most active
      */
-    private Deque<Map.Entry<String, Integer>> findTheTop10MostAcitveDescending() {
+    private PriorityQueue<Map.Entry<String, Integer>> findTheTop10MostAcitveDescending(Map<String, Integer> map) {
+
         /** Use PriorityQueue with size 10 to find out top 10 most active Host/IP. */
         PriorityQueue<Map.Entry<String, Integer>> theTop10AescendingOrder
                 = new PriorityQueue<>(10, new Comparator<Map.Entry<String, Integer>>() {
             @Override
             public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-                /** Stores top 10 entries in ascending order. */
                 return o1.getValue().compareTo(o2.getValue());
             }
         });
 
-        for (Map.Entry<String, Integer> entry: countHostOrIPFrequencyMap.entrySet()) {
+
+        for (Map.Entry<String, Integer> entry : map.entrySet()) {
             theTop10AescendingOrder.offer(entry);
             /** If the size of PriorityQueue is greater than 10, poll the smallest 1 and rearrange the order. */
             if (theTop10AescendingOrder.size() > 10)
                 theTop10AescendingOrder.poll();
         }
-        /** A stack for reverse PriorityQueue's order. */
-        Deque<Map.Entry<String, Integer>> theTop10DescendingOrder = new ArrayDeque<>();
-        /** Poll up from PriorityQueue and push into Descending order. */
-        while (!theTop10AescendingOrder.isEmpty())
-            theTop10DescendingOrder.push(theTop10AescendingOrder.poll());
-
-        return theTop10DescendingOrder;
+        return theTop10AescendingOrder;
     }
+
+
 }

@@ -17,8 +17,9 @@ public class Main {
 
         Features features = new Features();
 
-        features.executeFeature1();
+//        features.executeFeature1();
 
+        features.executeFeature2();
 
 
     }
