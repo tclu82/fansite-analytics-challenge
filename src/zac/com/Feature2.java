@@ -51,7 +51,7 @@ public class Feature2 {
             /** Pop up all entries and write to output file. */
             while (!deque.isEmpty()) {
                 Map.Entry<String, Integer> entry = deque.pop();
-                writer.write(entry.getKey() + "\n");
+                writer.write(entry.getKey()  + "\n");
             }
         }
         catch (IOException ex) { System.out.println("IO exception: " + ex); }
