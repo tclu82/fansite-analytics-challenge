@@ -16,7 +16,7 @@ public class Features {
     /**
      * A map contains resource as key and its frequency as value for Feature 2.
      */
-    Map<String, Integer> resourceUsedFrequency;
+    Map<String, ResourceConsume> resourceUsedFrequency;
 
     /**
      * Constructor
@@ -76,9 +76,7 @@ public class Features {
                 else
                     countHostOrIPFrequencyMap.put(hostOrIP, countHostOrIPFrequencyMap.get(hostOrIP) + 1);
 
-
-
-
+                
                 // Feature 2
 
                 String resourceName = strs[6];
@@ -88,15 +86,13 @@ public class Features {
                 int resourceSize = Character.isDigit(lastElement.charAt(0)) ?
                         Integer.parseInt(lastElement) : 0;
 
-//                ResourceConsume resourceConsume = new ResourceConsume(resourceName, resourceSize);
 
-                /** If the key is not in the map, put the key and 1 as value. */
+                /** If the key is not in the map, put a new ResourceConsume object. */
                 if (!resourceUsedFrequency.containsKey(resourceName))
-                    resourceUsedFrequency.put(resourceName, resourceSize);
-                /** Else add 1 to its frequency. */
-                else
-                    resourceUsedFrequency.put(resourceName, resourceUsedFrequency.get(resourceName) + resourceSize);
+                    resourceUsedFrequency.put(resourceName, new ResourceConsume(resourceName, resourceSize));
 
+                /** Add 1 to frequency. */
+                resourceUsedFrequency.get(resourceName).addFrequency();
             }
 
 

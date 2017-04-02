@@ -9,11 +9,10 @@ import java.util.*;
  * This class perform Feature 1 to print out top 10 most active Host/IP in descending order.
  */
 public class Feature2 {
-//    /** A map contains Host/IP name as key and its frequency as value. */
-//    Map<String, Integer> countHostOrIPFrequencyMap;
-    Map<String, Integer> resourceUsedFrequency;
 
-    Feature2(Map<String, Integer> map) throws FileNotFoundException {
+    Map<String, ResourceConsume> resourceUsedFrequency;
+
+    Feature2(Map<String, ResourceConsume> map) throws FileNotFoundException {
 
         resourceUsedFrequency = map;
 
@@ -34,10 +33,10 @@ public class Feature2 {
      */
     void execute() throws FileNotFoundException {
 
-        PriorityQueue<Map.Entry<String, Integer>> pq
+        PriorityQueue<Map.Entry<String, ResourceConsume>> pq
                 = findTheTop10MostAcitveDescending(resourceUsedFrequency);
 
-        Deque<Map.Entry<String, Integer>> deque = new ArrayDeque<>();
+        Deque<Map.Entry<String, ResourceConsume>> deque = new ArrayDeque<>();
 
         while (!pq.isEmpty()) deque.push(pq.poll());
 
@@ -50,7 +49,7 @@ public class Feature2 {
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("resource.txt"), "utf-8"));
             /** Pop up all entries and write to output file. */
             while (!deque.isEmpty()) {
-                Map.Entry<String, Integer> entry = deque.pop();
+                Map.Entry<String, ResourceConsume> entry = deque.pop();
                 writer.write(entry.getKey()  + "\n");
             }
         }
@@ -64,25 +63,27 @@ public class Feature2 {
     /**
      * Find out top 10 most active entries from countHostOrIPFrequencyMap
      *
-     * Run time: O(nlgn)
+     * Run time: O(n)
      * n is the number of countHostOrIPFrequencyMap's entry set.
-     * In this PriorityQueue I uses minimum heap, offer and poll are both O(nlgn).
+     * This PriorityQueue's size is limited to 10, so offer and poll will be constant.
      *
      * @return An Deque of Map.Entry<String, Integer> with top 10 most active
      */
-    private PriorityQueue<Map.Entry<String, Integer>> findTheTop10MostAcitveDescending(Map<String, Integer> map) {
+    private PriorityQueue<Map.Entry<String, ResourceConsume>> findTheTop10MostAcitveDescending(Map<String, ResourceConsume> map) {
 
         /** Use PriorityQueue with size 10 to find out top 10 most active Host/IP. */
-        PriorityQueue<Map.Entry<String, Integer>> theTop10AescendingOrder
-                = new PriorityQueue<>(10, new Comparator<Map.Entry<String, Integer>>() {
+        PriorityQueue<Map.Entry<String, ResourceConsume>> theTop10AescendingOrder
+                = new PriorityQueue<>(10, new Comparator<Map.Entry<String, ResourceConsume>>() {
             @Override
-            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-                return o1.getValue().compareTo(o2.getValue());
+            public int compare(Map.Entry<String, ResourceConsume> o1, Map.Entry<String, ResourceConsume> o2) {
+                int bancwidthConsumption1 = o1.getValue().frequency * o1.getValue().resourceSize;
+                int bancwidthConsumption2 = o2.getValue().frequency * o2.getValue().resourceSize;
+                return bancwidthConsumption1-bancwidthConsumption2;
             }
         });
 
 
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
+        for (Map.Entry<String, ResourceConsume> entry : map.entrySet()) {
             theTop10AescendingOrder.offer(entry);
             /** If the size of PriorityQueue is greater than 10, poll the smallest 1 and rearrange the order. */
             if (theTop10AescendingOrder.size() > 10)

@@ -1,10 +1,10 @@
-/shuttle/countdown/count70.gif, 1959049585
-/shuttle/technology/sts-newsref/stsref-toc.html, 1256215694
-/shuttle/countdown/video/livevideo2.gif, 1169155568
-/shuttle/countdown/count.gif, 1154002480
-/shuttle/missions/sts-71/movies/sts-71-hatch-hand-group.mpg", 1135756810
-/shuttle/countdown/video/livevideo.gif, 1128333928
-/shuttle/missions/sts-71/movies/sts-71-mir-dock.mpg, 1095681435
-/history/apollo/apollo-13/movies/apo13damage.mpg, 967648747
-/shuttle/missions/sts-71/movies/crew-arrival-t38.mpg, 917040600
-/shuttle/missions/sts-70/movies/sts-70-launch.mpg, 910056394
+/shuttle/countdown/count70.gif
+/shuttle/technology/sts-newsref/stsref-toc.html
+/shuttle/countdown/video/livevideo2.gif
+/shuttle/countdown/count.gif
+/shuttle/missions/sts-70/movies/woodpecker.mpg
+/shuttle/missions/sts-71/movies/sts-71-hatch-hand-group.mpg"
+/shuttle/missions/sts-71/movies/crew-arrival-t38.mpg
+/shuttle/missions/sts-71/movies/sts-71-tcdt-crew-walkout.mpg
+/shuttle/missions/sts-66/mission-sts-66.html
+/shuttle/countdown/video/livevideo.jpeg
