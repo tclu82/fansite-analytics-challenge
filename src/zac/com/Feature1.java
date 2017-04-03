@@ -12,9 +12,7 @@ public class Feature1 {
 
     Map<String, Integer> countHostOrIPFrequencyMap;
 
-//    Deque<Map.Entry<String, Integer>> deque;
-
-    Feature1(Map<String, Integer> map) throws FileNotFoundException {
+    Feature1(Map<String, Integer> map) {
 
         countHostOrIPFrequencyMap = map;
 
@@ -27,7 +25,7 @@ public class Feature1 {
      *
      * @throws FileNotFoundException if log.txt not found
      */
-    void execute() throws FileNotFoundException {
+    void execute() {
 
         PriorityQueue<Map.Entry<String, Integer>> pq
                 = findTheTop10MostAcitveDescending(countHostOrIPFrequencyMap);

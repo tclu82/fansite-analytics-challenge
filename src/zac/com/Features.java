@@ -1,6 +1,12 @@
 package zac.com;
 
+import sun.util.resources.LocaleData;
+
 import java.io.*;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -33,11 +39,7 @@ public class Features {
 
 
         /** Run execution, throw exception if file not found. */
-        try {
-            readFile();
-        } catch (FileNotFoundException e) {
-            System.out.println("File Not Found, please check your input \"log.txt\"");
-        }
+        readFile();
     }
 
 
@@ -47,124 +49,143 @@ public class Features {
      * <p>
      * Run time: O(mn)
      * m is the line quantity of input file, and n is the average length of lines.
-     *
-     * @throws FileNotFoundException if log.txt not found.
      */
-    private void readFile() throws FileNotFoundException {
+    private void readFile() {
         /** Try to read the input file, and catch the file not found exception. */
         try {
             File file = new File("src/log.txt");
             /** BufferReader has bigger buffer and more efficient when reading huge file. */
             BufferedReader br = new BufferedReader(new FileReader(file));
             /** A variable to contain each line. */
-            String line;
+            String line1, line2;
 
 
-            /** Read each line from BufferReader. */
-            while ((line = br.readLine()) != null) {
-                /** Split the line with " ". */
-                String[] strs = line.split(" ");
+
+            // Date
+
+            line1 = br.readLine();
+            line2 = br.readLine();
+
+            String[] strs1 = line1.split(" ");
+            String[] strs2 = line2.split(" ");
 
 
-                // Feature 1
 
-                String hostOrIP = strs[0];
-                /** If the key is not in the map, put the key and 1 as value. */
-                if (!countHostOrIPFrequencyMap.containsKey(hostOrIP))
-                    countHostOrIPFrequencyMap.put(hostOrIP, 1);
-                /** Else add 1 to its frequency. */
-                else
-                    countHostOrIPFrequencyMap.put(hostOrIP, countHostOrIPFrequencyMap.get(hostOrIP) + 1);
+            String dateString1 = strs1[3].substring(1);
+            String dateString2 = strs2[3].substring(1);
 
-                
-                // Feature 2
-
-                String resourceName = strs[6];
-
-                String lastElement = strs[strs.length-1];
-
-                int resourceSize = Character.isDigit(lastElement.charAt(0)) ?
-                        Integer.parseInt(lastElement) : 0;
+            System.out.println(dateString1);
+            System.out.println(dateString2);
 
 
-                /** If the key is not in the map, put a new ResourceConsume object. */
-                if (!resourceUsedFrequency.containsKey(resourceName))
-                    resourceUsedFrequency.put(resourceName, new ResourceConsume(resourceName, resourceSize));
+            DateFormat df = new SimpleDateFormat("dd/MMM/yyyy:hh:mm:ss");
+            Date date1 = df.parse(dateString1);
+            Date date2 = df.parse(dateString2);
 
-                /** Add 1 to frequency. */
-                resourceUsedFrequency.get(resourceName).addFrequency();
-            }
+            System.out.println("\nDate info:\n");
+
+            System.out.println(date1.toString());
+            System.out.println(date1.compareTo(date2));
 
 
-        } catch (IOException e) {
-            System.out.println("File is not found.");
+//            java.util.Calendar cal = java.util.Calendar.getInstance();
+//            String dateInString = new java.text.SimpleDateFormat("dd/EEE/yyyy:hh:mm:ss")
+//                    .format(cal.getTime());
+//            System.out.println(dateInString);
+
+
+
+
+
+//            formatter.parse(dateString);
+
+//            System.out.println(parsedDate.toString());
+
+
+
+//            /** Read each line from BufferReader. */
+//            while ((line = br.readLine()) != null) {
+//                /** Split the line with " ". */
+//                String[] strs = line.split(" ");
+
+
+//                // Feature 1
+//
+//                String hostOrIP = strs[0];
+//                /** If the key is not in the map, put the key and 1 as value. */
+//                if (!countHostOrIPFrequencyMap.containsKey(hostOrIP))
+//                    countHostOrIPFrequencyMap.put(hostOrIP, 1);
+//                /** Else add 1 to its frequency. */
+//                else
+//                    countHostOrIPFrequencyMap.put(hostOrIP, countHostOrIPFrequencyMap.get(hostOrIP) + 1);
+//
+//
+//                // Feature 2
+//
+//                String resourceName = strs[6];
+//
+//                String lastElement = strs[strs.length-1];
+//
+//                int resourceSize = Character.isDigit(lastElement.charAt(0)) ?
+//                        Integer.parseInt(lastElement) : 0;
+//
+//
+//                /** If the key is not in the map, put a new ResourceConsume object. */
+//                if (!resourceUsedFrequency.containsKey(resourceName))
+//                    resourceUsedFrequency.put(resourceName, new ResourceConsume(resourceName, resourceSize));
+//
+//                /** Add 1 to frequency. */
+//                resourceUsedFrequency.get(resourceName).addFrequency();
+
+
+
+
+                // Feature 3
+
+
+
+
+
+
+
+
+                // Feature 4
+
+
+//            }
+
+
+
         }
+        catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (ParseException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
 
 
 
-    void executeFeature1() throws FileNotFoundException {
+
+
+
+    void executeFeature1() {
 
         Feature1 f1 = new Feature1(countHostOrIPFrequencyMap);
 
     }
 
-    void executeFeature2() throws FileNotFoundException {
-
-//        PriorityQueue<Map.Entry<String, Integer>> pq
-//                = findTheTop10MostAcitveDescending(resourceUsedFrequency);
+    void executeFeature2() {
 
         Feature2 f2 = new Feature2(resourceUsedFrequency);
 
     }
-
-
-
-//    /**
-//     * Find out top 10 most active entries from countHostOrIPFrequencyMap
-//     *
-//     * Run time: O(nlgn)
-//     * n is the number of countHostOrIPFrequencyMap's entry set.
-//     * In this PriorityQueue I uses minimum heap, offer and poll are both O(nlgn).
-//     *
-//     * @return An Deque of Map.Entry<String, Integer> with top 10 most active
-//     */
-//    private PriorityQueue<Map.Entry<String, Integer>> findTheTop10MostAcitveDescending(Map<String, Integer> map) {
-//
-//        /** Use PriorityQueue with size 10 to find out top 10 most active Host/IP. */
-//        PriorityQueue<Map.Entry<String, Integer>> theTop10AescendingOrder
-//                = new PriorityQueue<>(10, new Comparator<Map.Entry<String, Integer>>() {
-//            @Override
-//            public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
-//                /** Stores top 10 entries in ascending order. */
-//                return o1.getValue().compareTo(o2.getValue());
-//            }
-//        });
-//
-//        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-//            theTop10AescendingOrder.offer(entry);
-//            /** If the size of PriorityQueue is greater than 10, poll the smallest 1 and rearrange the order. */
-//            if (theTop10AescendingOrder.size() > 10)
-//                theTop10AescendingOrder.poll();
-//        }
-//        return theTop10AescendingOrder;
-//    }
-
-
-//    /**
-//     * Inner class for Feature 2
-//     */
-//    class ResourceConsume {
-//        String resourceName;
-//        int resourceSize;
-//
-//        ResourceConsume(String name, int size) {
-//            this.resourceName = name;
-//            this.resourceSize = size;
-//        }
-//    }
-
 }
 

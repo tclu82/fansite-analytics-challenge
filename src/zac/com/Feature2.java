@@ -12,7 +12,7 @@ public class Feature2 {
 
     Map<String, ResourceConsume> resourceUsedFrequency;
 
-    Feature2(Map<String, ResourceConsume> map) throws FileNotFoundException {
+    Feature2(Map<String, ResourceConsume> map) {
 
         resourceUsedFrequency = map;
 
@@ -31,7 +31,7 @@ public class Feature2 {
      *
      * @throws FileNotFoundException if log.txt not found
      */
-    void execute() throws FileNotFoundException {
+    void execute() {
 
         PriorityQueue<Map.Entry<String, ResourceConsume>> pq
                 = findTheTop10MostAcitveDescending(resourceUsedFrequency);
