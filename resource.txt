@@ -7,4 +7,4 @@
 /shuttle/missions/sts-71/movies/crew-arrival-t38.mpg
 /shuttle/missions/sts-71/movies/sts-71-tcdt-crew-walkout.mpg
 /shuttle/missions/sts-66/mission-sts-66.html
-/shuttle/countdown/video/livevideo.jpeg
+    /shuttle/countdown/video/livevideo.jpeg
