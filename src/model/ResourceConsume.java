@@ -1,4 +1,4 @@
-package zac.com;
+package model;
 
 /**
  * Created by zac on 4/1/17.
@@ -8,13 +8,13 @@ public class ResourceConsume {
     int resourceSize;
     int frequency;
 
-    ResourceConsume(String name, int size) {
+    public ResourceConsume(String name, int size) {
         this.resourceName = name;
         this.resourceSize = size;
         frequency = 0;
     }
 
-    void addFrequency() {
+    public void addFrequency() {
         this.frequency++;
     }
 }

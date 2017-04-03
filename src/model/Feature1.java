@@ -1,4 +1,7 @@
-package zac.com;
+package model;
+
+import control.ReadFile;
+import control.TopKPriorityQueue;
 
 import java.io.*;
 import java.util.*;
@@ -8,33 +11,20 @@ import java.util.*;
  *
  * This class perform Feature 1 to print out top 10 most active Host/IP in descending order.
  */
-public class Feature1 {
+public class Feature1 extends Features {
 
-    Map<String, Integer> countHostOrIPFrequencyMap;
-
-    Feature1(Map<String, Integer> map) {
-
-        countHostOrIPFrequencyMap = map;
-
-        execute();
-
+    public Feature1(ReadFile data) {
+        super(data);
     }
 
     /**
      * Helper method of constructor, read the file and find out top 10 most active Host/IP
-     *
-     * @throws FileNotFoundException if log.txt not found
      */
-    void execute() {
+    @Override
+    public void execute() {
 
-        PriorityQueue<Map.Entry<String, Integer>> pq
-                = findTheTop10MostAcitveDescending(countHostOrIPFrequencyMap);
-
-
-        Deque<Map.Entry<String, Integer>> deque = new ArrayDeque<>();
-
-        while (!pq.isEmpty()) deque.push(pq.poll());
-
+        List<Map.Entry<String, Integer>> list
+                = findTheTop10MostActiveDescending(dataStruct.countHostOrIPFrequencyMap);
 
         /** Print out the result. */
         Writer writer = null;
@@ -42,11 +32,11 @@ public class Feature1 {
         /** Write to hosts.txt and catch the exceptions. */
         try {
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("hosts.txt"), "utf-8"));
+
             /** Pop up all entries and write to output file. */
-            while (!deque.isEmpty()) {
-                Map.Entry<String, Integer> entry = deque.pop();
+            for (Map.Entry<String, Integer> entry: list)
                 writer.write(entry.getKey() + ", " + entry.getValue() + "\n");
-            }
+
         }
         catch (IOException ex) { System.out.println("IO exception: " + ex); }
 
@@ -65,11 +55,11 @@ public class Feature1 {
      *
      * @return An Deque of Map.Entry<String, Integer> with top 10 most active
      */
-    private PriorityQueue<Map.Entry<String, Integer>> findTheTop10MostAcitveDescending(Map<String, Integer> map) {
+    private List<Map.Entry<String, Integer>> findTheTop10MostActiveDescending(Map<String, Integer> map) {
 
         /** Use PriorityQueue with size 10 to find out top 10 most active Host/IP. */
-        PriorityQueue<Map.Entry<String, Integer>> theTop10AescendingOrder
-                = new PriorityQueue<>(10, new Comparator<Map.Entry<String, Integer>>() {
+        TopKPriorityQueue<Map.Entry<String, Integer>> theTop10DescendingOrder
+                = new TopKPriorityQueue<>(10, new Comparator<Map.Entry<String, Integer>>() {
             @Override
             public int compare(Map.Entry<String, Integer> o1, Map.Entry<String, Integer> o2) {
                 /** Stores top 10 entries in ascending order. */
@@ -77,13 +67,10 @@ public class Feature1 {
             }
         });
 
-        for (Map.Entry<String, Integer> entry : map.entrySet()) {
-            theTop10AescendingOrder.offer(entry);
-            /** If the size of PriorityQueue is greater than 10, poll the smallest 1 and rearrange the order. */
-            if (theTop10AescendingOrder.size() > 10)
-                theTop10AescendingOrder.poll();
-        }
-        return theTop10AescendingOrder;
+        for (Map.Entry<String, Integer> entry : map.entrySet())
+            theTop10DescendingOrder.push(entry);
+
+        return theTop10DescendingOrder.offers();
     }
 
 
