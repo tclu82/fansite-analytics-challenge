@@ -1,7 +1,6 @@
 package control;
 
 import model.Resource;
-import model.ResourceConsume;
 
 import java.io.*;
 import java.text.DateFormat;
@@ -17,14 +16,19 @@ public class ReadFile {
     /**
      * A map contains Host/IP name as key and its frequency as value for Feature 1.
      */
-    public Map<String, Integer> countHostOrIPFrequencyMap;
+    public Map<String, Resource> hostNameMap;
+
+
     /**
      * A map contains resource as key and its frequency as value for Feature 2.
      */
-    public Map<String, ResourceConsume> resourceUsedFrequency;
+    public Map<String, Resource> resourceMap;
 
 
-    public List<Resource> resourceList;
+
+    public TreeMap<String, Resource> busyMap;
+
+
 
 
     /**
@@ -33,13 +37,13 @@ public class ReadFile {
     public ReadFile() {
 
 
-        countHostOrIPFrequencyMap = new HashMap<>();
+        hostNameMap = new HashMap<>();
 
 
-        resourceUsedFrequency = new HashMap<>();
+        resourceMap = new HashMap<>();
 
 
-        resourceList = new ArrayList<>();
+        busyMap = new TreeMap<>();
 
 
 
@@ -64,56 +68,54 @@ public class ReadFile {
             /** A variable to contain each line. */
             String line;
 
+
             /** Read each line from BufferReader. */
             while ((line = br.readLine()) != null) {
                 /** Split the line with " ". */
                 String[] strs = line.split(" ");
-
+                String hostName = strs[0];
+                String resourceName = strs[6];
+                String lastElement = strs[strs.length-1];
+                int resourceSize = Character.isDigit(lastElement.charAt(0)) ? Integer.parseInt(lastElement) : 0;
+                String dateOriginal = strs[3].substring(1);
+                String timeZone = strs[4].substring(0,strs[4].length()-1);
+                String dateString = dateOriginal.replace("Jul", "07");
+                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy:hh:mm:ss");
+                Date date = dateFormat.parse(dateString);
 
                 // Feature 1
 
-                String hostOrIP = strs[0];
-                /** If the key is not in the map, put the key and 1 as value. */
-                if (!countHostOrIPFrequencyMap.containsKey(hostOrIP))
-                    countHostOrIPFrequencyMap.put(hostOrIP, 1);
-                /** Else add 1 to its frequency. */
-                else
-                    countHostOrIPFrequencyMap.put(hostOrIP, countHostOrIPFrequencyMap.get(hostOrIP) + 1);
+//                /** If the key is not in the map, put the key and 1 as value. */
+//                if (!hostNameMap.containsKey(hostName)) {
+//                    hostNameMap.put(hostName, new Resource(hostName, resourceName, resourceSize, dateString, timeZone, date));
+//                }
+//
+//                hostNameMap.get(hostName).addFrequency();
 
 
                 // Feature 2
 
-                String resourceName = strs[6];
-
-                String lastElement = strs[strs.length-1];
-
-                int resourceSize = Character.isDigit(lastElement.charAt(0)) ?
-                        Integer.parseInt(lastElement) : 0;
-
-
-                /** If the key is not in the map, put a new ResourceConsume object. */
-                if (!resourceUsedFrequency.containsKey(resourceName))
-                    resourceUsedFrequency.put(resourceName, new ResourceConsume(resourceName, resourceSize));
-
-                /** Add 1 to frequency. */
-                resourceUsedFrequency.get(resourceName).addFrequency();
+//                /** If the key is not in the map, put a new ResourceConsume object. */
+//                if (!resourceMap.containsKey(resourceName))
+//                    resourceMap.put(resourceName, new Resource(hostName, resourceName, resourceSize, dateString, timeZone, date));
+//
+//                /** Add 1 to frequency. */
+//                resourceMap.get(resourceName).addFrequency();
 
 
                 // Feature 3
 
-                String dateOriginal = strs[3].substring(1);
-                String dateString = dateOriginal.replace("Jul", "07");
 
-                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy:hh:mm:ss");
-                Date date = dateFormat.parse(dateString);
+                if (!busyMap.containsKey(dateString))
+                    busyMap.put(dateString, new Resource(hostName, resourceName, resourceSize, dateString, timeZone, date));
 
-                Resource resource = new Resource(dateString, date);
-
-                resourceList.add(resource);
+                busyMap.get(dateString).addFrequency();
 
 
 
                 // Feature 4
+
+
 
 
             }

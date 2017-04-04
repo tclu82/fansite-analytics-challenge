@@ -4,14 +4,14 @@ import control.ReadFile;
 import control.TopKPriorityQueue;
 
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Created by zac on 4/2/17.
  */
 public class Feature3 extends Features {
+
+    public static final long ONE_HOUR = 1000 * 60 * 60;
 
     public Feature3(ReadFile data) {
         super(data);
@@ -19,37 +19,69 @@ public class Feature3 extends Features {
 
     @Override
     public void execute() {
-        List<Resource> resourceList = dataStruct.resourceList;
-        List<ResourceWindow> windowList = new ArrayList<>();
+        TreeMap<String, Resource> busyMap = dataStruct.busyMap;
 
-        int i = 0, j = 0;
+        System.out.println("key size: " + busyMap.keySet().size());
 
-        for (i = 0; i < resourceList.size(); i++) {
+        System.out.println("value size: " + busyMap.values().size());
 
-            Resource resource1 = resourceList.get(i);
+        Date start = busyMap.firstEntry().getValue().date;
 
-            while (true) {
+        Date stop = new Date(start.getTime() + ONE_HOUR);
 
-                if (j >= resourceList.size()) {
-                    j--;
-                    break;
+//        System.out.println(start);
+//        System.out.println(stop);
+
+        String maxName = busyMap.firstKey();
+
+        int maxCount = 0;
+
+        Date cur = start;
+
+        List<Resource> list = new LinkedList<>();
+
+
+//        System.out.println("here1");
+
+        for (Resource resource: busyMap.values()) {
+
+            long timeDifferent = stop.getTime() - resource.date.getTime();
+
+            System.out.println(timeDifferent);
+
+
+            if (timeDifferent < ONE_HOUR) {
+
+//                System.out.println("here2");
+
+                int frequency = resource.frequency;
+
+                if (frequency > maxCount) {
+                    maxName = resource.dateString;
+                    maxCount = frequency;
                 }
-
-                Resource resource2 = resourceList.get(j);
-
-                long timeDifferent = resource2.date.getTime() - resource1.date.getTime();
-                /** If greater 1 hour, start another new 1 hour window. */
-                if (timeDifferent > 1000 * 60 * 60) {
-                    j--;
-                    break;
-                }
-                j++;
             }
-            windowList.add(new ResourceWindow(resource1, j - i + 1));
+            else {
+
+                list.add(new Resource(busyMap.get(maxName)));
+
+                break;
+
+
+//                stop.setTime(resource.date.getTime() + ONE_HOUR);
+//
+//                maxName = resource.dateString;
+//                maxCount = resource.frequency;
+            }
+
+
         }
 
 
-        List<ResourceWindow> list = findTheTop10MostActiveDescending(windowList);
+//        System.out.println("here5");
+
+
+        List<Resource> res = findTheTop10MostActiveDescending(list);
 
 
         /** Print out the result. */
@@ -58,43 +90,51 @@ public class Feature3 extends Features {
         /** Write to hosts.txt and catch the exceptions. */
         try {
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("hours.txt"), "utf-8"));
+
+
             /** Pop up all entries and write to output file. */
-            for (ResourceWindow resourceWindow : list)
-                writer.write(resourceWindow.resource.dateString + "," + resourceWindow.resouceCount + "\n");
-        } catch (IOException ex) {
-            System.out.println("IO exception: " + ex);
-        } finally {
+            for (Resource resource : res)
+                writer.write(resource.dateString + " " + resource.timeZone + " " + resource.frequency + "\n");
+
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        finally {
+
             try {
                 writer.close();
-            } catch (Exception ex) {
-                System.out.println("Output file can't be closed: " + ex);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
             }
         }
     }
 
 
-    private List<ResourceWindow> findTheTop10MostActiveDescending(List<ResourceWindow> list) {
+    private List<Resource> findTheTop10MostActiveDescending(List<Resource> list) {
 
-        TopKPriorityQueue<ResourceWindow> theTop10BusyDescending = new TopKPriorityQueue<>(10, new Comparator<ResourceWindow>() {
+        TopKPriorityQueue<Resource> theTop10BusyDescending = new TopKPriorityQueue<>(10, new Comparator<Resource>() {
             @Override
-            public int compare(ResourceWindow o1, ResourceWindow o2) {
-                return o1.resouceCount - o2.resouceCount;
+            public int compare(Resource o1, Resource o2) {
+                return o1.frequency-o2.frequency;
             }
         });
 
-        for (ResourceWindow resourceWindow : list)
-            theTop10BusyDescending.push(resourceWindow);
+        for (Resource resource : list)
+            theTop10BusyDescending.push(resource);
 
         return theTop10BusyDescending.offers();
     }
 
-    private class ResourceWindow {
-        Resource resource;
-        int resouceCount;
+//    private class ResourceWindow {
+//        Resource resource;
+//        int resouceCount;
+//
+//        private ResourceWindow(Resource resource, int resourceCount) {
+//            this.resource = resource;
+//            this.resouceCount = resourceCount;
+//        }
+//    }
 
-        private ResourceWindow(Resource resource, int resourceCount) {
-            this.resource = resource;
-            this.resouceCount = resourceCount;
-        }
-    }
 }

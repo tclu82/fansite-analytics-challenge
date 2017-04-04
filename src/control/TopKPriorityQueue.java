@@ -22,7 +22,8 @@ public class TopKPriorityQueue<T> {
     public void push(T x) {
         pq.offer(x);
 
-        /** If the size of PriorityQueue is greater than specific size,
+        /**
+         * If the size of PriorityQueue is greater than specific size,
          * poll the smallest 1 and rearrange the order.
          */
         if (pq.size() > size)

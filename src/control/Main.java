@@ -19,17 +19,18 @@ public class Main {
 
         ReadFile readFile = new ReadFile();
 
-        Features f1 = new Feature1(readFile);
-        f1.execute();
+//        Features f1 = new Feature1(readFile);
+//        f1.execute();
 
-        Features f2 = new Feature2(readFile);
-        f2.execute();
+//        Features f2 = new Feature2(readFile);
+//        f2.execute();
 
-//        Features f3 = new Feature3(readFile);
-//        f3.execute();
+        Features f3 = new Feature3(readFile);
+        f3.execute();
 
 
-
+//        Features f4 = new Feature3(readFile);
+//        f4.execute();
 
 
     }
