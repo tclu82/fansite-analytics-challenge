@@ -26,20 +26,20 @@ public class Feature3 extends Features {
 
         Map<String, TimestampCount> busyMap = readFile.busyMap;
 
-        List<TimestampCount> busiestList = busiestWindows(timestampList, busyMap, ONE_HOUR);
+        Set<TimestampCount> busiestList = busiestWindows(timestampList, busyMap, ONE_HOUR);
 
-        Set<TimestampCount> set = new HashSet<>();
+//        Set<TimestampCount> set = new HashSet<>();
+//
+//        set.addAll(busiestList);
 
-        set.addAll(busiestList);
-        
-        List<TimestampCount> top10BusiestDescending = findTheTop10MostActiveDescending(set);
+        List<TimestampCount> top10BusiestDescending = findTheTop10MostActiveDescending(busiestList);
 
         /** Print out the result. */
         Writer writer = null;
 
         /** Write to hosts.txt and catch the exceptions. */
         try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("hours.txt"), "utf-8"));
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("log_output/hours.txt"), "utf-8"));
 
             /** Pop up all entries and write to output file. */
             for (TimestampCount timestampCount: top10BusiestDescending)
@@ -58,8 +58,8 @@ public class Feature3 extends Features {
 
 
 
-    private List<TimestampCount> busiestWindows(List<String> list, Map<String, TimestampCount> map, long time) {
-        List<TimestampCount> result = new ArrayList<>();
+    private Set<TimestampCount> busiestWindows(List<String> list, Map<String, TimestampCount> map, long time) {
+        Set<TimestampCount> result = new HashSet<>();
 
         String maxTimestamp;
         maxTimestamp = findMaxTimestamp(list, map, 0, time);
@@ -80,6 +80,15 @@ public class Feature3 extends Features {
         return result;
     }
 
+    /**
+     * This method finds the max timestamp from start index with time interval of list
+     *
+     * @param list
+     * @param map
+     * @param startIndex
+     * @param time
+     * @return a String of maximum timestamp
+     */
     private String findMaxTimestamp(List<String> list, Map<String, TimestampCount> map, int startIndex, long time) {
 
         long start = map.get(list.get(startIndex)).date.getTime();

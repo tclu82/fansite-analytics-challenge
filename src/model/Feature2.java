@@ -35,7 +35,7 @@ public class Feature2 extends Features {
 
         /** Write to hosts.txt and catch the exceptions. */
         try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("resource.txt"), "utf-8"));
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("log_output/resource.txt"), "utf-8"));
             /** write to output file. */
             for (Resource resource: resourceList)
                 writer.write(resource.resourceName  + "\n");

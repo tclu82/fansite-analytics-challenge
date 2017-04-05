@@ -2,6 +2,5 @@ out/*
 .idea/*
 *.iml
 *.txt
-hosts.txt
-resource.txt
-log.txt
+log_input/*
+log_output/*

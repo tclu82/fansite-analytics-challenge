@@ -25,8 +25,16 @@ public class Main {
 //        Features f2 = new Feature2(readFile);
 //        f2.execute();
 
+        long start = System.currentTimeMillis();
+
         Features f3 = new Feature3(readFile);
         f3.execute();
+
+        long duration = (System.currentTimeMillis() - start) / 1000;
+        System.out.println("It took" +  duration + " seconds.");
+
+
+
 
 //        Features f4 = new Feature3(readFile);
 //        f4.execute();

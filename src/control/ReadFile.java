@@ -60,7 +60,7 @@ public class ReadFile {
     private void readFile() {
         /** Try to read the input file, and catch the file not found exception. */
         try {
-            File file = new File("log.txt");
+            File file = new File("log_input/log.txt");
             /** BufferReader has bigger buffer and more efficient when reading huge file. */
             BufferedReader br = new BufferedReader(new FileReader(file));
             /** A variable to contain each line. */
@@ -82,22 +82,22 @@ public class ReadFile {
 
                 // Feature 1
 
-//                /** If the key is not in the map, put the key and 1 as value. */
-//                if (!hostNameMap.containsKey(hostName)) {
-//                    hostNameMap.put(hostName, new Resource(hostName, resourceName, resourceSize, timestamp, timeZone));
-//                }
-//
-//                hostNameMap.get(hostName).addFrequency();
+                /** If the key is not in the map, put the key and 1 as value. */
+                if (!hostNameMap.containsKey(hostName)) {
+                    hostNameMap.put(hostName, new Resource(hostName, resourceName, resourceSize, timestamp, timeZone));
+                }
+
+                hostNameMap.get(hostName).addFrequency();
 
 
                 // Feature 2
 
-//                /** If the key is not in the map, put a new ResourceConsume object. */
-//                if (!resourceMap.containsKey(resourceName))
-//                    resourceMap.put(resourceName, new Resource(hostName, resourceName, resourceSize, timestamp, timeZone));
-//
-//                /** Add 1 to frequency. */
-//                resourceMap.get(resourceName).addFrequency();
+                /** If the key is not in the map, put a new ResourceConsume object. */
+                if (!resourceMap.containsKey(resourceName))
+                    resourceMap.put(resourceName, new Resource(hostName, resourceName, resourceSize, timestamp, timeZone));
+
+                /** Add 1 to frequency. */
+                resourceMap.get(resourceName).addFrequency();
 
 
                 // Feature 3
