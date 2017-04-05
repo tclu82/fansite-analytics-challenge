@@ -26,13 +26,9 @@ public class Feature3 extends Features {
 
         Map<String, TimestampCount> busyMap = readFile.busyMap;
 
-        Set<TimestampCount> busiestList = busiestWindows(timestampList, busyMap, ONE_HOUR);
+        Set<TimestampCount> busiestSet = busiestWindows(timestampList, busyMap, ONE_HOUR);
 
-//        Set<TimestampCount> set = new HashSet<>();
-//
-//        set.addAll(busiestList);
-
-        List<TimestampCount> top10BusiestDescending = findTheTop10MostActiveDescending(busiestList);
+        List<TimestampCount> top10BusiestDescending = findTheTop10MostActiveDescending(busiestSet);
 
         /** Print out the result. */
         Writer writer = null;
@@ -71,12 +67,12 @@ public class Feature3 extends Features {
 
         for (int i=1; map.get(list.get(i)).date.getTime() <= stop; i++) {
 
-            maxTimestamp = findMaxTimestamp(list, map, i, time);
+            if (list.get(i-1) == maxTimestamp) {
 
+                maxTimestamp = findMaxTimestamp(list, map, i, time);
+            }
             result.add(map.get(maxTimestamp));
         }
-
-
         return result;
     }
 
