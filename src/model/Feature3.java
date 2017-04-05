@@ -28,51 +28,11 @@ public class Feature3 extends Features {
 
         List<TimestampCount> busiestList = busiestWindows(timestampList, busyMap, ONE_HOUR);
 
+        Set<TimestampCount> set = new HashSet<>();
 
-//        int i=0, j=0;
-//
-//        for (i=0; i<timestampList.size(); i++) {
-//
-//            TimestampCount currentTimestampCount = busyMap.get(timestampList.get(i));
-//
-//            Date currentDate = currentTimestampCount.date;
-//
-//            long timeDifferent = stop.getTime() - currentDate.getTime();
-//
-//
-//            /** Find out resource in each hour */
-//            if (timeDifferent <= ONE_HOUR && timeDifferent >= 0) {
-//
-////                System.out.println("here2");
-////                System.out.println(timeDifferent);
-//
-//                int frequency = currentTimestampCount.frequency;
-//
-//                if (frequency > busiestCount) {
-//                    busiestTimestamp = currentTimestampCount.timestamp;
-//                    busiestCount = frequency;
-//                }
-//            }
-//            /** Find out the max one within last 1 hour and add into the List. */
-//            else {
-//
-////                list.add(new Resource(busyMap.get(maxName)));
-////
-////                stop.setTime(resource.date.getTime() + ONE_HOUR);
-//////
-////                maxName = resource.dateString;
-////                maxCount = resource.frequency;
-//            }
-
-//        System.out.println(maxName + ", " + busyMap.get(maxName).frequency);
-//        System.out.println(list.size());
-//        System.out.println(list.get(0).dateString + ", " +list.get(0).frequency);
-//
-////        System.out.println("here5");
-//
-//
-//        List<Resource> res = findTheTop10MostActiveDescending(list);
-
+        set.addAll(busiestList);
+        
+        List<TimestampCount> top10BusiestDescending = findTheTop10MostActiveDescending(set);
 
         /** Print out the result. */
         Writer writer = null;
@@ -82,8 +42,9 @@ public class Feature3 extends Features {
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("hours.txt"), "utf-8"));
 
             /** Pop up all entries and write to output file. */
-            for (TimestampCount timestampCount: busiestList)
-                writer.write(timestampCount.timestamp + ", " + timestampCount.frequency + "\n");
+            for (TimestampCount timestampCount: top10BusiestDescending)
+                writer.write(timestampCount.timestamp + " " + timestampCount.timeZone
+                                    + "," + timestampCount.frequency + "\n");
         }
         catch (IOException e) { e.printStackTrace(); }
 
@@ -96,35 +57,44 @@ public class Feature3 extends Features {
     }
 
 
-    private List<Resource> findTheTop10MostActiveDescending(List<Resource> list) {
-
-        TopKPriorityQueue<Resource> theTop10BusyDescending = new TopKPriorityQueue<>(10, new Comparator<Resource>() {
-            @Override
-            public int compare(Resource o1, Resource o2) {
-                return o1.frequency-o2.frequency;
-            }
-        });
-
-        for (Resource resource : list)
-            theTop10BusyDescending.push(resource);
-
-        return theTop10BusyDescending.offers();
-    }
-
-
-
 
     private List<TimestampCount> busiestWindows(List<String> list, Map<String, TimestampCount> map, long time) {
         List<TimestampCount> result = new ArrayList<>();
-        Date start = map.get(list.get(0)).date;
-        Date stop = new Date(start.getTime() + time);
-        int i=0;
-        String maxTimestamp = list.get(0);
+
+        String maxTimestamp;
+        maxTimestamp = findMaxTimestamp(list, map, 0, time);
+        result.add(map.get(maxTimestamp));
+
+        String lastTimestamp = list.get(list.size() - 1);
+        long end = map.get(lastTimestamp).date.getTime();
+        long stop = end - time;
+
+        for (int i=1; map.get(list.get(i)).date.getTime() <= stop; i++) {
+
+            maxTimestamp = findMaxTimestamp(list, map, i, time);
+
+            result.add(map.get(maxTimestamp));
+        }
+
+
+        return result;
+    }
+
+    private String findMaxTimestamp(List<String> list, Map<String, TimestampCount> map, int startIndex, long time) {
+
+        long start = map.get(list.get(startIndex)).date.getTime();
+
+        long stop = new Date(start + time).getTime();
+
+        String maxTimestamp = list.get(startIndex);
+
         int maxTimestampCount = map.get(maxTimestamp).frequency;
 
-        for (i=0; map.get(list.get(i)).date.getTime()-start.getTime() <= time; i++) {
+        for (int i=startIndex; stop - map.get(list.get(i)).date.getTime() <= time
+                            && stop - map.get(list.get(i)).date.getTime() >= 0; i++) {
 
             int currentTimestampCount = map.get(list.get(i)).frequency;
+
             String currentTimestamp = map.get(list.get(i)).timestamp;
 
             if (currentTimestampCount > maxTimestampCount) {
@@ -132,8 +102,23 @@ public class Feature3 extends Features {
                 maxTimestamp = currentTimestamp;
             }
         }
-        result.add(map.get(maxTimestamp));
+        return maxTimestamp;
+    }
 
-        return result;
+
+
+    private List<TimestampCount> findTheTop10MostActiveDescending(Set<TimestampCount> set) {
+
+        TopKPriorityQueue<TimestampCount> theTop10BusyDescending = new TopKPriorityQueue<>(10, new Comparator<TimestampCount>() {
+            @Override
+            public int compare(TimestampCount o1, TimestampCount o2) {
+                return o1.frequency - o2.frequency;
+            }
+        });
+
+        for (TimestampCount timestampCount : set)
+            theTop10BusyDescending.push(timestampCount);
+
+        return theTop10BusyDescending.offers();
     }
 }
