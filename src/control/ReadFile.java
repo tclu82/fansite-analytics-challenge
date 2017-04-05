@@ -1,11 +1,9 @@
 package control;
 
 import model.Resource;
+import model.TimestampCount;
 
 import java.io.*;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 /**
@@ -26,8 +24,8 @@ public class ReadFile {
 
 
 
-    public TreeMap<String, Resource> busyMap;
-
+    public Map<String, TimestampCount> busyMap;
+    public List<String> timestampList;
 
 
 
@@ -38,12 +36,12 @@ public class ReadFile {
 
 
         hostNameMap = new HashMap<>();
-
-
+        
         resourceMap = new HashMap<>();
+        
+        busyMap = new HashMap<>();
 
-
-        busyMap = new TreeMap<>();
+        timestampList = new ArrayList<>();
 
 
 
@@ -78,16 +76,15 @@ public class ReadFile {
                 String lastElement = strs[strs.length-1];
                 int resourceSize = Character.isDigit(lastElement.charAt(0)) ? Integer.parseInt(lastElement) : 0;
                 String dateOriginal = strs[3].substring(1);
+                String timestamp = dateOriginal.replace("Jul", "07");
                 String timeZone = strs[4].substring(0,strs[4].length()-1);
-                String dateString = dateOriginal.replace("Jul", "07");
-                DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy:hh:mm:ss");
-                Date date = dateFormat.parse(dateString);
+
 
                 // Feature 1
 
 //                /** If the key is not in the map, put the key and 1 as value. */
 //                if (!hostNameMap.containsKey(hostName)) {
-//                    hostNameMap.put(hostName, new Resource(hostName, resourceName, resourceSize, dateString, timeZone, date));
+//                    hostNameMap.put(hostName, new Resource(hostName, resourceName, resourceSize, timestamp, timeZone));
 //                }
 //
 //                hostNameMap.get(hostName).addFrequency();
@@ -97,7 +94,7 @@ public class ReadFile {
 
 //                /** If the key is not in the map, put a new ResourceConsume object. */
 //                if (!resourceMap.containsKey(resourceName))
-//                    resourceMap.put(resourceName, new Resource(hostName, resourceName, resourceSize, dateString, timeZone, date));
+//                    resourceMap.put(resourceName, new Resource(hostName, resourceName, resourceSize, timestamp, timeZone));
 //
 //                /** Add 1 to frequency. */
 //                resourceMap.get(resourceName).addFrequency();
@@ -105,11 +102,20 @@ public class ReadFile {
 
                 // Feature 3
 
+                /** Build the busyMap */
+                if (!busyMap.containsKey(timestamp))
+                    busyMap.put(timestamp, new TimestampCount(timestamp, timeZone));
 
-                if (!busyMap.containsKey(dateString))
-                    busyMap.put(dateString, new Resource(hostName, resourceName, resourceSize, dateString, timeZone, date));
+                busyMap.get(timestamp).addFrequency();
 
-                busyMap.get(dateString).addFrequency();
+
+                /** Build the timestampList */
+                if (!timestampList.isEmpty() && !timestampList.get(timestampList.size()-1).equals(timestamp))
+                    timestampList.add(timestamp);
+
+                if (timestampList.isEmpty())
+                    timestampList.add(timestamp);
+
 
 
 
@@ -122,6 +128,13 @@ public class ReadFile {
 
 
 
+
+//            for (int i=0; i<5; i++)
+//                System.out.println(timestampList.get(i));
+//
+//            for (int i=timestampList.size()-1; i>=timestampList.size()-5; i--)
+//                System.out.println(timestampList.get(i));
+
         }
         catch (FileNotFoundException e) {
             e.printStackTrace();
@@ -130,12 +143,6 @@ public class ReadFile {
         catch (IOException e) {
             e.printStackTrace();
         }
-
-        catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-
     }
 }
 

@@ -7,10 +7,10 @@ import control.ReadFile;
  */
 public abstract class Features {
 
-    protected ReadFile dataStruct;
+    protected ReadFile readFile;
 
-    protected Features(ReadFile dataStruct) {
-        this.dataStruct = dataStruct;
+    protected Features(ReadFile readFile) {
+        this.readFile = readFile;
     }
 
     public abstract void execute();

@@ -23,8 +23,7 @@ public class Feature1 extends Features {
     @Override
     public void execute() {
 
-        List<Map.Entry<String, Resource>> list
-                = findTheTop10MostActiveDescending(dataStruct.hostNameMap);
+        List<Resource> resourceList = findTheTop10MostActiveDescending(readFile.hostNameMap);
 
         /** Print out the result. */
         Writer writer = null;
@@ -34,8 +33,8 @@ public class Feature1 extends Features {
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("hosts.txt"), "utf-8"));
 
             /** Pop up all entries and write to output file. */
-            for (Map.Entry<String, Resource> entry: list)
-                writer.write(entry.getKey() + ", " + entry.getValue().frequency + "\n");
+            for (Resource resource: resourceList)
+                writer.write(resource.hostName + ", " + resource.frequency + "\n");
 
         }
         catch (IOException ex) { System.out.println("IO exception: " + ex); }
@@ -55,19 +54,19 @@ public class Feature1 extends Features {
      *
      * @return An Deque of Map.Entry<String, Integer> with top 10 most active
      */
-    private List<Map.Entry<String, Resource>> findTheTop10MostActiveDescending(Map<String, Resource> map) {
+    private List<Resource> findTheTop10MostActiveDescending(Map<String, Resource> map) {
 
         /** Use PriorityQueue with size 10 to find out top 10 most active Host/IP. */
-        TopKPriorityQueue<Map.Entry<String, Resource>> theTop10DescendingOrder
-                = new TopKPriorityQueue<>(10, new Comparator<Map.Entry<String, Resource>>() {
+        TopKPriorityQueue<Resource> theTop10DescendingOrder = new TopKPriorityQueue<>(10, new Comparator<Resource>() {
             @Override
-            public int compare(Map.Entry<String, Resource> o1, Map.Entry<String, Resource> o2) {
-                return o1.getValue().frequency - o2.getValue().frequency;
+            public int compare(Resource o1, Resource o2) {
+                return o1.frequency - o2.frequency;
             }
         });
 
-        for (Map.Entry<String, Resource> entry : map.entrySet())
-            theTop10DescendingOrder.push(entry);
+
+        for (Resource resource : map.values())
+            theTop10DescendingOrder.push(resource);
 
         return theTop10DescendingOrder.offers();
     }

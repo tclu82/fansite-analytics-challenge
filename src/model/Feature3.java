@@ -13,75 +13,65 @@ public class Feature3 extends Features {
 
     public static final long ONE_HOUR = 1000 * 60 * 60;
 
+
+
     public Feature3(ReadFile data) {
         super(data);
     }
 
     @Override
     public void execute() {
-        TreeMap<String, Resource> busyMap = dataStruct.busyMap;
 
-        System.out.println("key size: " + busyMap.keySet().size());
+        List<String> timestampList = readFile.timestampList;
 
-        System.out.println("value size: " + busyMap.values().size());
+        Map<String, TimestampCount> busyMap = readFile.busyMap;
 
-        Date start = busyMap.firstEntry().getValue().date;
-
-        Date stop = new Date(start.getTime() + ONE_HOUR);
-
-//        System.out.println(start);
-//        System.out.println(stop);
-
-        String maxName = busyMap.firstKey();
-
-        int maxCount = 0;
-
-        Date cur = start;
-
-        List<Resource> list = new LinkedList<>();
+        List<TimestampCount> busiestList = busiestWindows(timestampList, busyMap, ONE_HOUR);
 
 
-//        System.out.println("here1");
-
-        for (Resource resource: busyMap.values()) {
-
-            long timeDifferent = stop.getTime() - resource.date.getTime();
-
-            System.out.println(timeDifferent);
-
-
-            if (timeDifferent < ONE_HOUR) {
-
-//                System.out.println("here2");
-
-                int frequency = resource.frequency;
-
-                if (frequency > maxCount) {
-                    maxName = resource.dateString;
-                    maxCount = frequency;
-                }
-            }
-            else {
-
-                list.add(new Resource(busyMap.get(maxName)));
-
-                break;
-
-
-//                stop.setTime(resource.date.getTime() + ONE_HOUR);
+//        int i=0, j=0;
 //
-//                maxName = resource.dateString;
-//                maxCount = resource.frequency;
-            }
+//        for (i=0; i<timestampList.size(); i++) {
+//
+//            TimestampCount currentTimestampCount = busyMap.get(timestampList.get(i));
+//
+//            Date currentDate = currentTimestampCount.date;
+//
+//            long timeDifferent = stop.getTime() - currentDate.getTime();
+//
+//
+//            /** Find out resource in each hour */
+//            if (timeDifferent <= ONE_HOUR && timeDifferent >= 0) {
+//
+////                System.out.println("here2");
+////                System.out.println(timeDifferent);
+//
+//                int frequency = currentTimestampCount.frequency;
+//
+//                if (frequency > busiestCount) {
+//                    busiestTimestamp = currentTimestampCount.timestamp;
+//                    busiestCount = frequency;
+//                }
+//            }
+//            /** Find out the max one within last 1 hour and add into the List. */
+//            else {
+//
+////                list.add(new Resource(busyMap.get(maxName)));
+////
+////                stop.setTime(resource.date.getTime() + ONE_HOUR);
+//////
+////                maxName = resource.dateString;
+////                maxCount = resource.frequency;
+//            }
 
-
-        }
-
-
-//        System.out.println("here5");
-
-
-        List<Resource> res = findTheTop10MostActiveDescending(list);
+//        System.out.println(maxName + ", " + busyMap.get(maxName).frequency);
+//        System.out.println(list.size());
+//        System.out.println(list.get(0).dateString + ", " +list.get(0).frequency);
+//
+////        System.out.println("here5");
+//
+//
+//        List<Resource> res = findTheTop10MostActiveDescending(list);
 
 
         /** Print out the result. */
@@ -91,23 +81,17 @@ public class Feature3 extends Features {
         try {
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("hours.txt"), "utf-8"));
 
-
             /** Pop up all entries and write to output file. */
-            for (Resource resource : res)
-                writer.write(resource.dateString + " " + resource.timeZone + " " + resource.frequency + "\n");
+            for (TimestampCount timestampCount: busiestList)
+                writer.write(timestampCount.timestamp + ", " + timestampCount.frequency + "\n");
+        }
+        catch (IOException e) { e.printStackTrace(); }
 
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-        }
         finally {
 
-            try {
-                writer.close();
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-            }
+            try { writer.close(); }
+
+            catch (Exception e) { e.printStackTrace(); }
         }
     }
 
@@ -127,14 +111,29 @@ public class Feature3 extends Features {
         return theTop10BusyDescending.offers();
     }
 
-//    private class ResourceWindow {
-//        Resource resource;
-//        int resouceCount;
-//
-//        private ResourceWindow(Resource resource, int resourceCount) {
-//            this.resource = resource;
-//            this.resouceCount = resourceCount;
-//        }
-//    }
 
+
+
+    private List<TimestampCount> busiestWindows(List<String> list, Map<String, TimestampCount> map, long time) {
+        List<TimestampCount> result = new ArrayList<>();
+        Date start = map.get(list.get(0)).date;
+        Date stop = new Date(start.getTime() + time);
+        int i=0;
+        String maxTimestamp = list.get(0);
+        int maxTimestampCount = map.get(maxTimestamp).frequency;
+
+        for (i=0; map.get(list.get(i)).date.getTime()-start.getTime() <= time; i++) {
+
+            int currentTimestampCount = map.get(list.get(i)).frequency;
+            String currentTimestamp = map.get(list.get(i)).timestamp;
+
+            if (currentTimestampCount > maxTimestampCount) {
+                maxTimestampCount = currentTimestampCount;
+                maxTimestamp = currentTimestamp;
+            }
+        }
+        result.add(map.get(maxTimestamp));
+
+        return result;
+    }
 }

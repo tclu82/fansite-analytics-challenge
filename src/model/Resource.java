@@ -1,5 +1,8 @@
 package model;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 /**
@@ -15,33 +18,34 @@ public class Resource {
 
     public int resourceSize;
 
-    public String dateString;
+    public String timestamp;
 
     public String timeZone;
 
     public Date date;
 
 
-
-
-    public Resource(String hostName, String resourceName, int resourceSize, String dateString, String timeZone, Date theDate) {
+    public Resource(String hostName, String resourceName, int resourceSize, String timestamp, String timeZone) {
         this.hostName = hostName;
         this.resourceName = resourceName;
-        this.dateString = dateString;
-        this.date = theDate;
+        this.timestamp = timestamp;
         this.timeZone = timeZone;
         this.frequency = 0;
         this.resourceSize = resourceSize;
+        /** Initialize Date */
+        DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy:hh:mm:ss");
+        try { this.date = dateFormat.parse(this.timestamp); }
+        catch (ParseException e) { e.printStackTrace(); }
     }
 
-    public Resource(Resource r2) {
-        this.hostName = r2.hostName;
-        this.resourceName = r2.resourceName;
-        this.dateString = r2.dateString;
-        this.date = r2.date;
-        this.timeZone = r2.timeZone;
-        this.frequency = r2.frequency;
-        this.resourceSize = r2.resourceSize;
+    public Resource(Resource another) {
+        this.hostName = another.hostName;
+        this.resourceName = another.resourceName;
+        this.timestamp = another.timestamp;
+        this.date = another.date;
+        this.timeZone = another.timeZone;
+        this.frequency = another.frequency;
+        this.resourceSize = another.resourceSize;
     }
 
     public void addFrequency() {
