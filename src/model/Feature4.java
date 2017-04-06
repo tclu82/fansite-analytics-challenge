@@ -57,18 +57,17 @@ public class Feature4 extends Features {
 
                     j--;
                 }
-                /** The first failed record*/
+                /** The first failed record */
                 Date start = recordList.get(j+1).date;
 
                 Date current = recordList.get(i).date;
-
+                /** Add current record to blocked list if happened within time interval */
                 if (current.getTime() - start.getTime() <= TWENTY_SECONDS) {
 
                     blockedList.add(recordList.get(i));
                 }
             }
         }
-
         /** Print out the result. */
         Writer writer = null;
 
@@ -77,16 +76,18 @@ public class Feature4 extends Features {
             writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("log_output/blocked.txt"),
 
                     "utf-8"));
+
             /** Pop up all entries and write to output file. */
             for (Record record: blockedList) {
                 /** Write the record to blocked.txt */
                 String output = String.format("%s - - %s %s %s %s\n", record.host, record.originalTimestamp,
+
                         record.request, record.replyCode, record.bytes);
 
                 writer.write(output);
             }
         }
-        /** */
+        /** Catch exceptions */
         catch (IOException e) { e.printStackTrace(); }
 
         finally {

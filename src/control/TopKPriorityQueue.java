@@ -14,29 +14,34 @@ public class TopKPriorityQueue<T> {
 
     int size;
 
-    public TopKPriorityQueue(int size, Comparator<T> comp) {
+    public TopKPriorityQueue(int size, Comparator<T> comp)
+    {
         pq = new PriorityQueue<>(size, comp);
+
         this.size = size;
     }
 
-    public void push(T x) {
+    public void push(T x)
+    {
         pq.offer(x);
-
         /**
          * If the size of PriorityQueue is greater than specific size,
          * poll the smallest 1 and rearrange the order.
          */
         if (pq.size() > size)
+        {
             pq.poll();
+        }
     }
 
-    public List<T> offers() {
+    public List<T> offers()
+    {
         LinkedList<T> list = new LinkedList<>();
-
         /** Ascending to descending. */
         while (!pq.isEmpty())
+        {
             list.addFirst(pq.poll());
-
+        }
         return list;
     }
 }

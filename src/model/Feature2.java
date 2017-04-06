@@ -9,71 +9,86 @@ import java.util.*;
 /**
  * Created by zac on 3/31/17.
  *
- * This class perform Feature 1 to print out top 10 most active Host/IP in descending order.
+ * This class perform Feature 2 to print out top 10 sites consume the most bandwidth.
  */
 public class Feature2 extends Features {
 
-    public Feature2(ReadFile data) {
-        super(data);
+    /**
+     * Constructor
+     *
+     * @param readFile
+     */
+    public Feature2(ReadFile readFile)
+    {
+        super(readFile);
     }
 
-
-
     /**
-     * Helper method of constructor, read the file and find out top 10 most active Host/IP
-     *
-     * @throws FileNotFoundException if log.txt not found
+     * Write top 10 sites consume the most bandwidth to output file
      */
     @Override
-    public void execute() {
-
-        List<Resource> resourceList = findTheTop10MostActiveDescending(readFile.resourceMap);
-
-
+    public void execute()
+    {
+        List<Record> resourceList = findTheTop10MostActiveDescending(readFile.resourceMap);
         /** Print out the result. */
         Writer writer = null;
-
         /** Write to hosts.txt and catch the exceptions. */
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("log_output/resource.txt"), "utf-8"));
+        try
+        {
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("log_output/resource.txt"),
+                    "utf-8"));
             /** write to output file. */
-            for (Resource resource: resourceList)
-                writer.write(resource.resourceName  + "\n");
-
+            for (Record record: resourceList)
+            {
+                writer.write(record.resource + "\n");
+            }
         }
-        catch (IOException e) { e.printStackTrace(); }
-
-        finally { try { writer.close(); } catch (Exception e) { e.printStackTrace(); } }
+        catch (IOException e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            try
+            {
+                writer.close();
+            }
+            catch (IOException e)
+            {
+                e.printStackTrace();
+            }
+        }
     }
 
-
-
     /**
-     * Find out top 10 most active entries from countHostOrIPFrequencyMap
+     * Find out top 10 consume most bandwidth sites
      *
      * Run time: O(n)
-     * n is the number of countHostOrIPFrequencyMap's entry set.
-     * This PriorityQueue's size is limited to 10, so offer and poll will be constant.
+     * n is the number of resourceMap's entry set.
+     * In this PriorityQueue, the size is constrained in 10, offer and poll are O(lg10) == O(1)
      *
-     * @return An Deque of Map.Entry<String, Integer> with top 10 most active
+     * @param resourceMap
+     * @return An List of top 10 most active Record
      */
-    private List<Resource> findTheTop10MostActiveDescending(Map<String, Resource> map) {
-
-        /** Use PriorityQueue with size 10 to find out top 10 most active Host/IP. */
-        TopKPriorityQueue<Resource> theTop10DescendingOrder
-                = new TopKPriorityQueue<>(10, new Comparator<Resource>() {
+    private List<Record> findTheTop10MostActiveDescending(Map<String, Record> resourceMap) {
+        /** Use PriorityQueue with size 10 to find out top 10 consume most bandwidth */
+        TopKPriorityQueue<Record> theTop10DescendingOrder = new TopKPriorityQueue<>(10, new Comparator<Record>() {
             @Override
-            public int compare(Resource o1, Resource o2) {
-                int bandwidthConsume1 = o1.frequency * o1.resourceSize;
-                int bandwidthConsume2 = o2.frequency * o2.resourceSize;
+            public int compare(Record o1, Record o2)
+            {
+                int bandwidthConsume1 = o1.resourceCount * Integer.parseInt(o1.bytes);
+
+                int bandwidthConsume2 = o2.resourceCount * Integer.parseInt(o2.bytes);
+                /** Sorted in ascending order */
                 return bandwidthConsume1 - bandwidthConsume2;
             }
         });
 
-
-        for (Resource resource : map.values())
-            theTop10DescendingOrder.push(resource);
-
+        for (Record record : resourceMap.values())
+        {
+            theTop10DescendingOrder.push(record);
+        }
+        /** Return descending order */
         return theTop10DescendingOrder.offers();
     }
 }
