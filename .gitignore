@@ -2,5 +2,4 @@ out/*
 .idea/*
 *.iml
 *.txt
-log_input/*
-log_output/*
+

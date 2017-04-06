@@ -7,40 +7,58 @@ import java.util.PriorityQueue;
 
 /**
  * Created by zac on 4/2/17.
+ *
+ * This class is used for the first 3 features to find out the top 10 priority
  */
 public class TopKPriorityQueue<T> {
-
-    PriorityQueue<T> pq;
-
+    /** Use priority queue for default sorting when offer and poll, O(lgn) */
+    PriorityQueue<T> priorityQueue;
+    /** Size of the priority queue */
     int size;
 
-    public TopKPriorityQueue(int size, Comparator<T> comp)
+    /**
+     * Constructor
+     *
+     * @param size
+     * @param comparetor
+     */
+    public TopKPriorityQueue(int size, Comparator<T> comparetor)
     {
-        pq = new PriorityQueue<>(size, comp);
+        priorityQueue = new PriorityQueue<>(size, comparetor);
 
         this.size = size;
     }
 
-    public void push(T x)
+    /**
+     * Push data into TopKPriorityQueue
+     *
+     * @param data
+     */
+    public void push(T data)
     {
-        pq.offer(x);
+        priorityQueue.offer(data);
         /**
          * If the size of PriorityQueue is greater than specific size,
          * poll the smallest 1 and rearrange the order.
          */
-        if (pq.size() > size)
+        if (priorityQueue.size() > size)
         {
-            pq.poll();
+            priorityQueue.poll();
         }
     }
 
+    /**
+     * Offer the List with Descending order sorted
+     *
+     * @return
+     */
     public List<T> offers()
     {
         LinkedList<T> list = new LinkedList<>();
-        /** Ascending to descending. */
-        while (!pq.isEmpty())
-        {
-            list.addFirst(pq.poll());
+
+        while (!priorityQueue.isEmpty())
+        {   /** Add to first, ascending becomes descending. */
+            list.addFirst(priorityQueue.poll());
         }
         return list;
     }

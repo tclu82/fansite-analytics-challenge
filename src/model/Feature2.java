@@ -12,6 +12,8 @@ import java.util.*;
  * This class perform Feature 2 to print out top 10 sites consume the most bandwidth.
  */
 public class Feature2 extends Features {
+    /** An output path for feature 2 */
+    private static final String FEATURE_2_OUTPUT = "log_output/resource.txt";
 
     /**
      * Constructor
@@ -28,14 +30,14 @@ public class Feature2 extends Features {
      */
     @Override
     public void execute()
-    {
-        List<Record> resourceList = findTheTop10MostActiveDescending(readFile.resourceMap);
+    {   /** resourceList contains the top 10 sites consume most resources in descending order */
+        List<Record> resourceList = findTheTop10ConsumptionInDescending(readFile.resourceMap);
         /** Print out the result. */
         Writer writer = null;
         /** Write to hosts.txt and catch the exceptions. */
         try
         {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("log_output/resource.txt"),
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(FEATURE_2_OUTPUT),
                     "utf-8"));
             /** write to output file. */
             for (Record record: resourceList)
@@ -70,7 +72,7 @@ public class Feature2 extends Features {
      * @param resourceMap
      * @return An List of top 10 most active Record
      */
-    private List<Record> findTheTop10MostActiveDescending(Map<String, Record> resourceMap) {
+    private List<Record> findTheTop10ConsumptionInDescending(Map<String, Record> resourceMap) {
         /** Use PriorityQueue with size 10 to find out top 10 consume most bandwidth */
         TopKPriorityQueue<Record> theTop10DescendingOrder = new TopKPriorityQueue<>(10, new Comparator<Record>() {
             @Override

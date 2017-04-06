@@ -11,6 +11,8 @@ import java.util.List;
  * Created by zac on 4/3/17.
  */
 public class Feature4 extends Features {
+    /** An output path for feature 4 */
+    private static final String FEATURE_4_OUTPUT = "log_output/blocked.txt";
     /** A constant time interval */
     private static final long TWENTY_SECONDS = 20 * 1000;
 
@@ -73,7 +75,7 @@ public class Feature4 extends Features {
 
         /** Write to hosts.txt and catch the exceptions. */
         try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("log_output/blocked.txt"),
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(FEATURE_4_OUTPUT),
 
                     "utf-8"));
 

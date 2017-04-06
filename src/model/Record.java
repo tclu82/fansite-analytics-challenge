@@ -9,7 +9,7 @@ import java.util.Date;
  * Created by zac on 4/5/17.
  */
 public class Record {
-
+    /** All required fields for 1 record */
     public String host;
 
     public String originalTimestamp;
@@ -44,27 +44,40 @@ public class Record {
      * @param bytes
      */
     public Record(String host, String timestamp, String request, String resource, String replyCode, String bytes) {
+
         this.host = host;
+
         this.originalTimestamp = timestamp;
+
         this.timestamp = this.originalTimestamp.replace("Jul", "07");
+
         this.request = request;
+
         this.resource = resource;
+
         this.replyCode = replyCode;
+
         this.bytes = bytes;
+
         this.hostCount = 0;
+
         this.resourceCount = 0;
+
         this.busyCount = 0;
+
         this.failCount = 0;
 
         /** Initialize Date */
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy:hh:mm:ss");
-        try {
+
+        try
+        {
             int index = timestamp.indexOf(' ');
 
             this.date = dateFormat.parse(this.timestamp.substring(1, index));
         }
-        catch (ParseException e) {
-
+        catch (ParseException e)
+        {
             e.printStackTrace();
         }
     }
@@ -77,16 +90,25 @@ public class Record {
         hostCount++;
     }
 
+    /**
+     * Update resource count
+     */
     public void addResourceCount()
     {
         resourceCount++;
     }
 
+    /**
+     * Update busy count
+     */
     public void addBusyCount()
     {
         busyCount++;
     }
 
+    /**
+     * Update failure count
+     */
     public void addFailCount()
     {
         failCount++;

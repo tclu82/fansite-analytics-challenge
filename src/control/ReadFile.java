@@ -125,26 +125,27 @@ public class ReadFile {
 
 
                 // Feature 4
-
+                /** "200" is the reply code for pass, others are considered as login failed */
                 if (!record.replyCode.equals("200"))
                 {
                     record.addFailCount();
                 }
+                /** List is not empty */
                 if (!recordList.isEmpty())
-                {
+                {   /** Find out last one */
                     Record lastRecord = recordList.get(recordList.size()-1);
                     /** Current and last are the same host */
                     if (lastRecord.host.equals(record.host))
-                    {   /** Last one is fail, either current */
+                    {   /** Last one is fail, so does current */
                         if (lastRecord.failCount > 0 && record.failCount == 1)
                         {
                             record.failCount = lastRecord.failCount + 1;
                         }
                     }
                 }
+                /** Add current record into list */
                 recordList.add(record);
             }
-
         }
         catch (FileNotFoundException e)
         {

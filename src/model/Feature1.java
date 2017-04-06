@@ -12,6 +12,8 @@ import java.util.*;
  * This class perform Feature 1 to print out top 10 most active Host/IP in descending order.
  */
 public class Feature1 extends Features {
+    /** An output path for feature 1 */
+    private static final String FEATURE_1_OUTPUT = "log_output/hosts.txt";
 
     /**
      * Constructor
@@ -29,14 +31,14 @@ public class Feature1 extends Features {
     @Override
     public void execute()
     {
-        /** A list contains  */
+        /** hostList contains the top 10 most active hosts */
         List<Record> hostList = findTheTop10MostActiveDescending(readFile.hostMap);
         /** Print out the result. */
         Writer writer = null;
         /** Write to hosts.txt and catch the exceptions. */
         try
         {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("log_output/hosts.txt"),
+            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(FEATURE_1_OUTPUT),
                     "utf-8"));
             /** Write all records to output file. */
             for (Record record: hostList)
