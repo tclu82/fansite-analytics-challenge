@@ -13,11 +13,13 @@ public class TimestampCount {
     String timeZone;
     Date date;
     int frequency;
+    String replyCode;
 
-    public TimestampCount(String timestamp, String timeZone) {
+    public TimestampCount(String timestamp, String timeZone, String replyCode) {
         this.timestamp = timestamp;
         this.timeZone = timeZone;
         this.frequency = 0;
+        this.replyCode = replyCode;
 
         /** Initialize Date */
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy:hh:mm:ss");

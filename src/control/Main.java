@@ -1,9 +1,6 @@
 package control;
 
-import model.Feature1;
-import model.Feature2;
-import model.Feature3;
-import model.Features;
+import model.*;
 
 /**
  * Main class
@@ -21,16 +18,14 @@ public class Main {
 
 //        Features f1 = new Feature1(readFile);
 //        f1.execute();
-
+//
 //        Features f2 = new Feature2(readFile);
 //        f2.execute();
+//
+//        Features f3 = new Feature3(readFile);
+//        f3.execute();
 
-        Features f3 = new Feature3(readFile);
-        f3.execute();
-
-//        Features f4 = new Feature3(readFile);
-//        f4.execute();
-
-
+        Features f4 = new Feature4(readFile);
+        f4.execute();
     }
 }

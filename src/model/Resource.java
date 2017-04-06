@@ -24,7 +24,6 @@ public class Resource {
 
     public Date date;
 
-
     public Resource(String hostName, String resourceName, int resourceSize, String timestamp, String timeZone) {
         this.hostName = hostName;
         this.resourceName = resourceName;
@@ -36,16 +35,6 @@ public class Resource {
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy:hh:mm:ss");
         try { this.date = dateFormat.parse(this.timestamp); }
         catch (ParseException e) { e.printStackTrace(); }
-    }
-
-    public Resource(Resource another) {
-        this.hostName = another.hostName;
-        this.resourceName = another.resourceName;
-        this.timestamp = another.timestamp;
-        this.date = another.date;
-        this.timeZone = another.timeZone;
-        this.frequency = another.frequency;
-        this.resourceSize = another.resourceSize;
     }
 
     public void addFrequency() {

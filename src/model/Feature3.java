@@ -22,34 +22,34 @@ public class Feature3 extends Features {
     @Override
     public void execute() {
 
-        List<String> timestampList = readFile.timestampList;
-
-        Map<String, TimestampCount> busyMap = readFile.busyMap;
-
-        Set<TimestampCount> busiestSet = busiestWindows(timestampList, busyMap, ONE_HOUR);
-
-        List<TimestampCount> top10BusiestDescending = findTheTop10MostActiveDescending(busiestSet);
-
-        /** Print out the result. */
-        Writer writer = null;
-
-        /** Write to hosts.txt and catch the exceptions. */
-        try {
-            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("log_output/hours.txt"), "utf-8"));
-
-            /** Pop up all entries and write to output file. */
-            for (TimestampCount timestampCount: top10BusiestDescending)
-                writer.write(timestampCount.timestamp + " " + timestampCount.timeZone
-                                    + "," + timestampCount.frequency + "\n");
-        }
-        catch (IOException e) { e.printStackTrace(); }
-
-        finally {
-
-            try { writer.close(); }
-
-            catch (Exception e) { e.printStackTrace(); }
-        }
+//        List<String> timestampList = readFile.timestampList;
+//
+//        Map<String, TimestampCount> busyMap = readFile.busyMap;
+//
+//        Set<TimestampCount> busiestSet = busiestWindows(timestampList, busyMap, ONE_HOUR);
+//
+//        List<TimestampCount> top10BusiestDescending = findTheTop10MostActiveDescending(busiestSet);
+//
+//        /** Print out the result. */
+//        Writer writer = null;
+//
+//        /** Write to hosts.txt and catch the exceptions. */
+//        try {
+//            writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("log_output/hours.txt"), "utf-8"));
+//
+//            /** Pop up all entries and write to output file. */
+//            for (TimestampCount timestampCount: top10BusiestDescending)
+//                writer.write(timestampCount.timestamp + " " + timestampCount.timeZone
+//                                    + "," + timestampCount.frequency + "\n");
+//        }
+//        catch (IOException e) { e.printStackTrace(); }
+//
+//        finally {
+//
+//            try { writer.close(); }
+//
+//            catch (Exception e) { e.printStackTrace(); }
+//        }
     }
 
 
