@@ -13,5 +13,4 @@
 
 6. type "javac src/*/*.java" in terminal and hit enter
 
-7. type "java -jar" in terminal runs this project, 4 files
-   will be made in side log_output
+7. type "java -jar out/artifacts/fansite_analytics_challenge_jar/fansite-analytics-challenge.jar" in terminal runs this project, 4 files will be made in side log_output
