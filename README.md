@@ -4,11 +4,14 @@
 
 2. Open the terminal and navigate the repository you just downloaded
 
-2. type "mkdir log_input log_ouput" then hit enter
+3. type "mkdir log_input log_ouput" then hit enter
 
-3. Download "log.txt" from following link
-https://drive.google.com/file/d/0B7-XWjN4ezogbUh6bUl1cV82Tnc/view
+4. Download "log.txt" from following link
+   https://drive.google.com/file/d/0B7-XWjN4ezogbUh6bUl1cV82Tnc/view
 
-4. copy log.txt into log_input folder
+5. copy log.txt into log_input folder
 
-5. type "javac src/*/*.java" in terminal and hit enter
+6. type "javac src/*/*.java" in terminal and hit enter
+
+7. type "java -jar" in terminal runs this project, 4 files
+   will be made in side log_output
