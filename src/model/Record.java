@@ -4,11 +4,16 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by zac on 4/5/17.
  */
 public class Record {
+
+    private static final String[] MONTHS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
+
     /** All required fields for 1 record */
     public String host;
 
@@ -49,8 +54,6 @@ public class Record {
 
         this.originalTimestamp = timestamp;
 
-        this.timestamp = this.originalTimestamp.replace("Jul", "07");
-
         this.request = request;
 
         this.resource = resource;
@@ -66,6 +69,8 @@ public class Record {
         this.busyCount = 0;
 
         this.failCount = 0;
+        /** Modify timestamp */
+        modifyMonthsFromLettersToDigits();
 
         /** Initialize Date */
         DateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy:hh:mm:ss");
@@ -79,6 +84,35 @@ public class Record {
         catch (ParseException e)
         {
             e.printStackTrace();
+        }
+    }
+
+    /**
+     * Replace "Jul" from originalTimestamp to "07" from Date later
+     */
+    private void modifyMonthsFromLettersToDigits()
+    {
+        Map<String, String> monthMap = new HashMap<>();
+
+        for (int i=0; i<MONTHS.length; i++)
+        {   /** 1-9 */
+            if (i<=8)
+            {
+                monthMap.put(MONTHS[i], "0" + String.valueOf(i+1));
+            }
+            /** 10-12 */
+            else
+            {
+                monthMap.put(MONTHS[i], String.valueOf(i+1));
+            }
+        }
+
+        for (String monthString: monthMap.keySet())
+        {   /** Find out which month then update to digits */
+            if (originalTimestamp.contains(monthString))
+            {
+                this.timestamp = this.originalTimestamp.replace(monthString, monthMap.get(monthString));
+            }
         }
     }
 
@@ -113,5 +147,4 @@ public class Record {
     {
         failCount++;
     }
-
 }
